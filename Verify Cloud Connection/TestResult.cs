@@ -1,6 +1,6 @@
-﻿namespace VerifyCloudConnection
+﻿namespace Verify_Cloud_Connection
 {
-	internal class TestResult
+	public class TestResult
 	{
 		public string ParameterName { get; set; }
 

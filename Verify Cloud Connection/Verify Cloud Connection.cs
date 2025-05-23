@@ -1,21 +1,20 @@
-namespace VerifyCloudConnection
+namespace Verify_Cloud_Connection
 {
 	using System;
 	using Newtonsoft.Json;
 	using Skyline.DataMiner.Automation;
 	using Skyline.DataMiner.DcpChatIntegrationHelper.Common;
-	using Skyline.DataMiner.DcpChatIntegrationHelper.Teams;
 
 	/// <summary>
 	/// Represents a DataMiner Automation script.
 	/// </summary>
-	public static class VerifyCloudConnection
+	public class Script
 	{
 		/// <summary>
 		/// The script entry point.
 		/// </summary>
 		/// <param name="engine">Link with SLAutomation process.</param>
-		public static void Run(IEngine engine)
+		public void Run(IEngine engine)
 		{
 			try
 			{
@@ -48,29 +47,25 @@ namespace VerifyCloudConnection
 			}
 		}
 
-		private static void RunSafe(IEngine engine)
+		private void RunSafe(IEngine engine)
 		{
-			TestResult result = new TestResult();
+			var result = new TestResult();
+			const string parameterName = "Verify Cloud Connection";
+
 			try
 			{
 				var chatIntegrationHelper = new ChatIntegrationHelperBuilder().Build();
 				var identity = chatIntegrationHelper.GetDataMinerServicesDmsIdentity();
 
-				result.ParameterName = "Verify Cloud Connection";
+				result.ParameterName = parameterName;
 				result.DmsId = Convert.ToString(identity.DmsId);
 				result.ReceivedValue = "Connected";
 			}
-			catch (ChatIntegrationException chatEx)
-			{
-				result.ParameterName = "Verify Cloud Connection";
-				result.DmsId = "N/A";
-				result.ReceivedValue = $"{chatEx}";
-			}
 			catch (Exception ex)
 			{
-				result.ParameterName = "Verify Cloud Connection";
+				result.ParameterName = parameterName;
 				result.DmsId = "N/A";
-				result.ReceivedValue = $"{ex}";
+				result.ReceivedValue = ex.Message;
 			}
 			finally
 			{
