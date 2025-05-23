@@ -1,6 +1,7 @@
 namespace Verify_Cloud_Connection
 {
 	using System;
+	using System.Collections.Generic;
 	using Newtonsoft.Json;
 	using Skyline.DataMiner.Automation;
 	using Skyline.DataMiner.DcpChatIntegrationHelper.Common;
@@ -49,7 +50,7 @@ namespace Verify_Cloud_Connection
 
 		private void RunSafe(IEngine engine)
 		{
-			var result = new TestResult();
+			List<TestResult> results = new List<TestResult>();
 			const string parameterName = "Verify Cloud Connection";
 
 			try
@@ -57,19 +58,25 @@ namespace Verify_Cloud_Connection
 				var chatIntegrationHelper = new ChatIntegrationHelperBuilder().Build();
 				var identity = chatIntegrationHelper.GetDataMinerServicesDmsIdentity();
 
-				result.ParameterName = parameterName;
-				result.DmsId = Convert.ToString(identity.DmsId);
-				result.ReceivedValue = "Connected";
+				results.Add(new TestResult
+				{
+					ParameterName = parameterName,
+					DmsId = Convert.ToString(identity.DmsId),
+					ReceivedValue = "Connected",
+				});
 			}
 			catch (Exception ex)
 			{
-				result.ParameterName = parameterName;
-				result.DmsId = "N/A";
-				result.ReceivedValue = ex.Message;
+				results.Add(new TestResult
+				{
+					ParameterName = parameterName,
+					DmsId = "N/A",
+					ReceivedValue = ex.Message,
+				});
 			}
 			finally
 			{
-				engine.AddScriptOutput("result", JsonConvert.SerializeObject(result));
+				engine.AddScriptOutput("result", JsonConvert.SerializeObject(results));
 			}
 		}
 	}
